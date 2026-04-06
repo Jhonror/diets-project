@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Nutrición - Jhon Romero</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap');
+        
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .glassmorphism-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-auto-rows: minmax(100px, auto);
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .bento-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        .tab-active {
+            background-color: #27ae60; /* accent */
+            color: white;
+            box-shadow: 0 4px 14px 0 rgba(39, 174, 96, 0.39);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media print {
+            body {
+                background-color: white !important;
+                color: black !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-container {
+                padding: 0 !important;
+                background: none !important;
+            }
+            .print-card {
+                box-shadow: none !important;
+                border: 1px solid #ccc !important;
+                background: white !important;
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                page-break-inside: avoid;
+            }
+            .print-text-brand { color: #2c3e50 !important; }
+            .print-text-accent { color: #27ae60 !important; }
+            .print-bg-white { background-color: white !important; }
+            .print-bento {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr) !important;
+                gap: 1rem;
+            }
+             h1, h2, h3, p {
+                color: black !important;
+            }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#2c3e50', // Slate Blue
+                        accent: '#27ae60', // Emerald Green
+                        'brand-dark': '#1e2b37'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 antialiased" style="background-image: linear-gradient(to top right, #2c3e50, #1e2b37);">
+    <div class="print-container container mx-auto p-4 md:p-8 text-white">
+
+        <!-- Header -->
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="font-display text-4xl md:text-5xl font-bold tracking-tight text-white">Plan de Nutrición de Alto Rendimiento</h1>
+            <p class="mt-2 text-xl text-gray-300">Protocolo de 12 Semanas para <span class="font-semibold text-accent">Jhon Romero</span></p>
+        </header>
+
+        <!-- Intro Text -->
+        <div class="glassmorphism-card print-card rounded-2xl p-6 mb-8 md:mb-12 text-brand-dark">
+            <p class="text-base leading-relaxed">Estimado Jhon, como nutricionista deportivo, he diseñado este plan ajustado a sus necesidades energéticas, sus preferencias alimenticias (solomo, pollo, arepa, yuca, plátano) y su objetivo de alcanzar su mejor forma física en 12 semanas. Hemos incorporado una estrategia de <strong class="font-semibold text-accent">Ciclado de Carbohidratos (Carb Cycling)</strong> para optimizar la quema de grasa manteniendo el rendimiento en sus entrenamientos de fuerza.</p>
+        </div>
+
+        <!-- Tab Switcher -->
+        <div class="no-print mb-8 flex justify-center">
+            <div class="bg-brand/50 backdrop-blur-sm p-1.5 rounded-full flex items-center space-x-2">
+                <button id="tab-entreno" class="tab-button px-6 py-2.5 text-sm font-semibold rounded-full transition-all duration-300 ease-in-out tab-active">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 01-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                    Día de Entreno
+                </button>
+                <button id="tab-descanso" class="tab-button px-6 py-2.5 text-sm font-semibold rounded-full transition-all duration-300 ease-in-out">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-2" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                    Día de Descanso
+                </button>
+            </div>
+        </div>
+
+        <!-- Plan Content -->
+        <div id="plan-content">
+            <!-- Training Day Content (Loaded by default) -->
+            <div id="entreno" class="space-y-8 fade-in">
+                <!-- Bento Grid Macros -->
+                <div class="bento-grid print-bento">
+                    <div class="glassmorphism-card print-card col-span-2 md:col-span-1 rounded-2xl p-4 flex flex-col justify-center items-center text-center">
+                        <span class="text-sm font-medium text-brand/80 print-text-brand">Calorías</span>
+                        <p class="font-display text-4xl font-bold text-accent print-text-accent">2,350</p>
+                        <span class="text-xs text-brand/60 print-text-brand">kcal</span>
+                    </div>
+                    <div class="glassmorphism-card print-card rounded-2xl p-4 flex flex-col justify-center items-center text-center">
+                        <span class="text-sm font-medium text-brand/80 print-text-brand">Proteína</span>
+                        <p class="font-display text-3xl font-bold text-brand print-text-brand">164g</p>
+                    </div>
+                    <div class="glassmorphism-card print-card rounded-2xl p-4 flex flex-col justify-center items-center text-center">
+                        <span class="text-sm font-medium text-brand/80 print-text-brand">Carbs</span>
+                        <p class="font-display text-3xl font-bold text-brand print-text-brand">276g</p>
+                    </div>
+                    <div class="glassmorphism-card print-card rounded-2xl p-4 flex flex-col justify-center items-center text-center">
+                        <span class="text-sm font-medium text-brand/80 print-text-brand">Grasa</span>
+                        <p class="font-display text-3xl font-bold text-brand print-text-brand">65g</p>
+                    </div>
+                </div>
+                
+                <!-- Meal Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Desayuno -->
+                    <div class="glassmorphism-card print-card rounded-2xl p-6 text-brand-dark">
+                        <h3 class="font-display text-2xl font-bold mb-4 text-brand">DESAYUNO</h3>
+                        <ul class="space-y-3 list-disc list-inside text-sm">
+                            <li><strong class="font-semibold text-accent">Opción 1:</strong> 2 huevos enteros + 8 claras revueltas con 2 arepas medianas (delgadas) y 1/4 de aguacate. Tinto (café) sin azúcar.</li>
+                            <li><strong class="font-semibold text-accent">Opción 2:</strong> 2 tajadas de quesito (60g) + 9 claras de huevo con 4 tajadas de pan integral. Tinto sin azúcar.</li>
+                            <li><strong class="font-semibold text-accent">Opción 3:</strong> 1 filete mediano de pechuga de pollo (140g) con 1 yuca pequeña (cocida) y 1/2 aguacate mediano.</li>
+                        </ul>
+                    </div>
+                    <!-- Almuerzo -->
+                    <div class="glassmorphism-card print-card rounded-2xl p-6 text-brand-dark">
+                        <h3 class="font-display text-2xl font-bold mb-1 text-brand">ALMUERZO</h3>
+                        <p class="text-xs font-semibold text-accent mb-3">(Pre-entreno)</p>
+                        <ul class="space-y-3 list-disc list-inside text-sm">
+                            <li><strong class="font-semibold text-accent">Opción 1:</strong> 1 filete de solomo redondo (150g) + 1.5 tazas de arroz blanco + 1/4 de aguacate.</li>
+                            <li><strong class="font-semibold text-accent">Opción 2:</strong> 1 filete de pechuga de pollo (100g) + 2 papas medianas + 1 taza de frijoles + 1/2 aguacate.</li>
+                            <li><strong class="font-semibold text-accent">Opción 3:</strong> 150g de Pulled pork (cerdo magro) + 1 yuca mediana + 1/2 taza de arroz + 1/4 de aguacate.</li>
+                        </ul>
+                    </div>
+                    <!-- Merienda -->
+                    <div class="glassmorphism-card print-card rounded-2xl p-6 text-brand-dark">
+                        <h3 class="font-display text-2xl font-bold mb-1 text-brand">MERIENDA</h3>
+                        <p class="text-xs font-semibold text-accent mb-3">(Post-entreno)</p>
+                        <ul class="space-y-3 list-disc list-inside text-sm">
+                            <li><strong class="font-semibold text-accent">Opción 1:</strong> Batido con 1.5 scoops de proteína + 5 tajadas de pan (o 2 arepas medianas) con 1/4 de aguacate.</li>
+                            <li><strong class="font-semibold text-accent">Opción 2:</strong> 1 filete de pechuga (160g) + 1 taza de arroz + 1 plátano maduro pequeño asado + 1/2 aguacate.</li>
+                            <li><strong class="font-semibold text-accent">Opción 3:</strong> 1 porción grande de camarones (210g) + 1.5 tazas de yuca picada + 1/2 aguacate.</li>
+                        </ul>
+                    </div>
+                    <!-- Cena -->
+                    <div class="glassmorphism-card print-card rounded-2xl p-6 text-brand-dark">
+                        <h3 class="font-display text-2xl font-bold mb-4 text-brand">CENA</h3>
+                        <ul class="space-y-3 list-disc list-inside text-sm">
+                            <li><strong class="font-semibold text-accent">Opción 1:</strong> 1 filete de salmón (150g) + 1 papa mediana + 3/4 taza de frijoles.</li>
+                            <li><strong class="font-semibold text-accent">Opción 2:</strong> 1 pierna pernil grande (sin piel, 180g) + 3/4 taza de arroz + 1/4 de aguacate.</li>
+                            <li><strong class="font-semibold text-accent">Opción 3:</strong> 1 filete de solomo redondo (150g) + 3/4 taza de arroz + 1/2 aguacate.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rest Day Content (Initially hidden) -->
+            <div id="descanso" class="space-y-8 hidden fade-in">
+                <!-- Bento Grid Macros -->
+                 <div class="bento-grid print-bento">
+                    <div class="glassmorphism-card print-card col-span-2 md:col-span-1 rounded-2xl p-4 flex flex-col justify-center items-center text-center">
+                        <span class="text-sm font-medium text-brand/80 print-text-brand">Calorías</span>
+                        <p class="font-display text-4xl font-bold text-accent print-text-accent">1,950</p>
+                        <span class="text-xs text-brand/60 print-text-brand">kcal</span>
+                    </div>
+                    <div class="glassmorphism-card print-card rounded-2xl p-4 flex flex-col justify-center items-center text-center">
+                        <span class="text-sm font-medium text-brand/80 print-text-brand">Proteína</span>
+                        <p class="font-display text-3xl font-bold text-brand print-text-brand">164g</p>
+                    </div>
+                    <div class="glassmorphism-card print-card rounded-2xl p-4 flex flex-col justify-center items-center text-center">
+                        <span class="text-sm font-medium text-brand/80 print-text-brand">Carbs</span>
+                        <p class="font-display text-3xl font-bold text-brand print-text-brand">176g</p>
+                    </div>
+                    <div class="glassmorphism-card print-card rounded-2xl p-4 flex flex-col justify-center items-center text-center">
+                        <span class="text-sm font-medium text-brand/80 print-text-brand">Grasa</span>
+                        <p class="font-display text-3xl font-bold text-brand print-text-brand">65g</p>
+                    </div>
+                </div>
+                
+                <!-- Meal Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Desayuno -->
+                    <div class="glassmorphism-card print-card rounded-2xl p-6 text-brand-dark">
+                        <h3 class="font-display text-2xl font-bold mb-4 text-brand">DESAYUNO</h3>
+                        <ul class="space-y-3 list-disc list-inside text-sm">
+                            <li><strong class="font-semibold text-accent">Opción 1:</strong> 2 huevos enteros + 8 claras + 1 arepa mediana + 1/4 de aguacate. Tinto sin azúcar.</li>
+                            <li><strong class="font-semibold text-accent">Opción 2:</strong> 2 tajadas de quesito (60g) + 9 claras + 3 tajadas de pan integral. Tinto sin azúcar.</li>
+                            <li><strong class="font-semibold text-accent">Opción 3:</strong> 1 filete de pechuga (140g) + 1/2 yuca pequeña + 1/2 aguacate.</li>
+                        </ul>
+                    </div>
+                    <!-- Almuerzo -->
+                    <div class="glassmorphism-card print-card rounded-2xl p-6 text-brand-dark">
+                        <h3 class="font-display text-2xl font-bold mb-4 text-brand">ALMUERZO</h3>
+                        <ul class="space-y-3 list-disc list-inside text-sm">
+                            <li><strong class="font-semibold text-accent">Opción 1:</strong> 1 filete de solomo redondo (150g) + 3/4 taza de arroz + 1/4 de aguacate.</li>
+                            <li><strong class="font-semibold text-accent">Opción 2:</strong> 1 filete de pechuga (100g) + 1 papa mediana + 3/4 taza de frijoles + 1/2 aguacate.</li>
+                            <li><strong class="font-semibold text-accent">Opción 3:</strong> 150g de Pulled pork + 1/2 yuca mediana + 1/4 de aguacate.</li>
+                        </ul>
+                    </div>
+                    <!-- Merienda -->
+                    <div class="glassmorphism-card print-card rounded-2xl p-6 text-brand-dark">
+                        <h3 class="font-display text-2xl font-bold mb-4 text-brand">MERIENDA</h3>
+                        <ul class="space-y-3 list-disc list-inside text-sm">
+                            <li><strong class="font-semibold text-accent">Opción 1:</strong> Batido con 1.5 scoops de proteína + 2 tajadas de pan integral + 1/2 aguacate.</li>
+                            <li><strong class="font-semibold text-accent">Opción 2:</strong> 1 filete de pechuga (160g) + 1/2 taza de arroz + 1/2 plátano maduro + 1/2 aguacate.</li>
+                            <li><strong class="font-semibold text-accent">Opción 3:</strong> 1 porción de camarones (210g) + 1/2 taza de yuca + 1/2 aguacate.</li>
+                        </ul>
+                    </div>
+                    <!-- Cena -->
+                    <div class="glassmorphism-card print-card rounded-2xl p-6 text-brand-dark">
+                        <h3 class="font-display text-2xl font-bold mb-4 text-brand">CENA</h3>
+                        <ul class="space-y-3 list-disc list-inside text-sm">
+                           <li><strong class="font-semibold text-accent">Opción 1:</strong> 1 filete de salmón (150g) + 1 papa mediana + 3/4 taza de frijoles.</li>
+                           <li><strong class="font-semibold text-accent">Opción 2:</strong> 1 pierna pernil (sin piel, 180g) + 3/4 taza de arroz + 1/4 de aguacate.</li>
+                           <li><strong class="font-semibold text-accent">Opción 3:</strong> 1 filete de solomo redondo (150g) + 3/4 taza de arroz + 1/2 aguacate.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Analysis and Recommendations -->
+        <div class="mt-8 md:mt-12 space-y-8">
+             <div class="glassmorphism-card print-card rounded-2xl p-6 md:p-8 text-brand-dark">
+                <h2 class="font-display text-2xl md:text-3xl font-bold text-brand mb-4">Análisis y Ajustes Clave</h2>
+                <ol class="space-y-4 text-sm leading-relaxed">
+                    <li class="flex items-start">
+                        <span class="bg-accent text-white rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 flex-shrink-0">1</span>
+                        <div><strong class="font-semibold text-brand">PROTEÍNA OPTIMIZADA:</strong> En su desayuno anterior consumía 4 huevos (~24g proteína). El nuevo plan eleva la proteína a ~40g por comida (usando claras o pollo) para proteger su masa muscular y aumentar la saciedad mientras pierde grasa.</div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-accent text-white rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 flex-shrink-0">2</span>
+                        <div><strong class="font-semibold text-brand">CONTROL DE CARBOHIDRATOS:</strong> Anteriormente consumía carbohidratos de forma intuitiva. Ahora, en días de entrenamiento aprovechamos 276g para rendir, pero los reducimos a 176g en días de descanso para maximizar la oxidación de grasa.</div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-accent text-white rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 flex-shrink-0">3</span>
+                        <div><strong class="font-semibold text-brand">UBICACIÓN ESTRATÉGICA:</strong> Hemos concentrado la mayor carga de arroz, papa y plátano en el almuerzo (pre) y merienda (post) para que esa energía se convierta en músculo y no en grasa.</div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-accent text-white rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 flex-shrink-0">4</span>
+                        <div><strong class="font-semibold text-brand">CALIDAD DE GRASAS:</strong> Se integró aguacate y quesito para dar saciedad y regular hormonas, reemplazando posibles grasas ocultas de los fines de semana.</div>
+                    </li>
+                    <li class="flex items-start">
+                        <span class="bg-accent text-white rounded-full h-6 w-6 flex items-center justify-center font-bold mr-3 flex-shrink-0">5</span>
+                        <div><strong class="font-semibold text-brand">EXCLUSIONES:</strong> Se han retirado por completo el hígado y el brócoli, respetando sus aversiones para asegurar que el plan sea sostenible.</div>
+                    </li>
+                </ol>
+             </div>
+             <div class="glassmorphism-card print-card rounded-2xl p-6 md:p-8 text-brand-dark">
+                <h2 class="font-display text-2xl md:text-3xl font-bold text-brand mb-4">Recomendaciones Generales</h2>
+                <ul class="space-y-3 list-disc list-inside">
+                    <li><strong class="font-semibold">Hidratación:</strong> Consuma al menos 3 litros de agua al día.</li>
+                    <li><strong class="font-semibold">Fin de semana:</strong> Si come afuera, elija una fuente de proteína magra (pollo o res) con solo un carbohidrato (papa o yuca) y evite salsas con mucha grasa o azúcar.</li>
+                    <li><strong class="font-semibold">Vegetales permitidos:</strong> Acompañe sus comidas con generosas porciones de lechuga, tomate, pepino o espárragos para mayor saciedad sin sumar calorías significativas.</li>
+                </ul>
+             </div>
+        </div>
+
+    </div>
+
+    <!-- Floating Action Button for Print -->
+    <button onclick="window.print()" class="no-print fixed bottom-6 right-6 bg-accent text-white w-16 h-16 rounded-full shadow-lg flex items-center justify-center transform hover:scale-110 transition-transform duration-300 ease-in-out">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v3a2 2 0 002 2h6a2 2 0 002-2v-3h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zm0 8H7v4h6v-4z" clip-rule="evenodd" />
+        </svg>
+        <span class="sr-only">Descargar PDF</span>
+    </button>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const tabEntreno = document.getElementById('tab-entreno');
+            const tabDescanso = document.getElementById('tab-descanso');
+            const contentEntreno = document.getElementById('entreno');
+            const contentDescanso = document.getElementById('descanso');
+
+            function switchTab(activeTab, inactiveTab, activeContent, inactiveContent) {
+                activeTab.classList.add('tab-active');
+                inactiveTab.classList.remove('tab-active');
+                
+                inactiveContent.classList.add('hidden');
+                activeContent.classList.remove('hidden');
+            }
+
+            tabEntreno.addEventListener('click', () => {
+                switchTab(tabEntreno, tabDescanso, contentEntreno, contentDescanso);
+            });
+
+            tabDescanso.addEventListener('click', () => {
+                switchTab(tabDescanso, tabEntreno, contentDescanso, contentEntreno);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+# Static site: each client folder has its own index.html.
+# URLs: / → index.html, /karen_rivera/ → karen_rivera/index.html, etc.
+
+[build]
+  publish = "."
+
+[[redirects]]
+  from = "/karen_rivera"
+  to = "/karen_rivera/"
+  status = 301
+
+[[redirects]]
+  from = "/jhon_romero"
+  to = "/jhon_romero/"
+  status = 301
