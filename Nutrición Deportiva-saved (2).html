@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Nutricional Deportivo - Karen Liseth Rivera Ovalle</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: '#2c3e50', // Slate Blue
+                        accent: '#27ae60', // Emerald Green
+                        'accent-dark': '#229954'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Outfit', 'sans-serif']
+                    },
+                    boxShadow: {
+                        'soft': '0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08)',
+                        'glow-accent': '0 0 15px rgba(39, 174, 96, 0.4)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @media print {
+            body {
+                background: white !important;
+                color: black !important;
+                font-size: 10pt;
+            }
+            .no-print, #print-fab {
+                display: none !important;
+            }
+            .print-container {
+                padding: 0 !important;
+                max-width: 100% !important;
+            }
+            .print-card {
+                background: #f8f9fa !important;
+                border: 1px solid #dee2e6 !important;
+                box-shadow: none !important;
+                backdrop-filter: none !important;
+                page-break-inside: avoid;
+            }
+            .print-header {
+                background: #e9ecef !important;
+                border-bottom: 1px solid #dee2e6 !important;
+                color: black !important;
+            }
+            .print-table, .print-table th, .print-table td {
+                border: 1px solid #dee2e6 !important;
+            }
+            h1, h2, h3, h4 {
+                color: #2c3e50 !important;
+            }
+            #training-day, #rest-day {
+                display: block !important; /* Show both sections for printing */
+            }
+            .print-section-title {
+                margin-top: 2rem;
+                padding-top: 1rem;
+                border-top: 2px solid #2c3e50;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 font-sans text-gray-200 antialiased relative">
+    <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-brand via-gray-900 to-black -z-10"></div>
+
+    <div id="app" class="container mx-auto p-4 md:p-8 max-w-7xl print-container">
+        <!-- Header -->
+        <header class="text-center mb-8 md:mb-12">
+            <h1 class="font-display text-4xl md:text-5xl font-bold text-white tracking-tight">Plan Nutricional Deportivo</h1>
+            <p class="mt-2 text-lg md:text-xl text-gray-400">Paciente: <span class="font-semibold text-white">Karen Liseth Rivera Ovalle</span></p>
+            <p class="mt-1 text-accent">Objetivo: Pérdida de grasa con retención de masa muscular</p>
+        </header>
+
+        <!-- Bento Grid Macro Summary -->
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-12">
+            <!-- Training Day Macros -->
+            <div class="col-span-2 p-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-soft print-card">
+                <h3 class="font-display text-lg font-bold text-white mb-3">Días de Entrenamiento</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                    <div>
+                        <p class="text-sm text-gray-400">Calorías</p>
+                        <p class="text-2xl font-bold text-accent">1484</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-400">Proteína</p>
+                        <p class="text-2xl font-bold text-white">146g</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-400">Carbs</p>
+                        <p class="text-2xl font-bold text-white">94g</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-400">Grasas</p>
+                        <p class="text-2xl font-bold text-white">58g</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Rest Day Macros -->
+            <div class="col-span-2 p-5 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-soft print-card">
+                <h3 class="font-display text-lg font-bold text-white mb-3">Días de Descanso</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                    <div>
+                        <p class="text-sm text-gray-400">Calorías</p>
+                        <p class="text-2xl font-bold text-accent">1084</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-400">Proteína</p>
+                        <p class="text-2xl font-bold text-white">146g</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-400">Carbs</p>
+                        <p class="text-2xl font-bold text-white">&lt; 5g</p>
+                    </div>
+                    <div>
+                        <p class="text-sm text-gray-400">Grasas</p>
+                        <p class="text-2xl font-bold text-white">58g</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab Switcher -->
+        <div class="flex justify-center mb-8 no-print">
+            <div class="bg-brand p-1.5 rounded-full flex items-center space-x-2">
+                <button id="tab-training" class="tab-btn active px-6 py-2.5 text-sm font-bold rounded-full transition-colors duration-300">Día de Entreno</button>
+                <button id="tab-rest" class="tab-btn px-6 py-2.5 text-sm font-bold rounded-full transition-colors duration-300">Día de Descanso</button>
+            </div>
+        </div>
+        
+        <!-- Meal Plans -->
+        <main>
+            <!-- Training Day Plan -->
+            <div id="training-day" class="tab-content space-y-8">
+                <h2 class="font-display text-3xl font-bold text-white text-center print-section-title">Estructura: Días de Entrenamiento</h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Desayuno -->
+                    <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl overflow-hidden shadow-soft print-card">
+                        <div class="bg-white/5 p-4 print-header"><h3 class="font-display text-xl font-bold text-white">Desayuno</h3><p class="text-sm text-gray-400">Bajo en Carbs, Alto en Proteína</p></div>
+                        <div class="p-5 space-y-4">
+                            <div><p class="font-semibold text-accent">Opción 1:</p><ul class="list-disc list-inside text-gray-300 text-sm pl-2"><li>3 huevos enteros revueltos con tomate y cebolla.</li><li>1 tajada gruesa de quesito antioqueño (40g).</li><li>1 arepa blanca delgada pequeña (30g).</li><li>Café o aromática sin azúcar.</li></ul></div>
+                            <div><p class="font-semibold text-accent">Opción 2:</p><ul class="list-disc list-inside text-gray-300 text-sm pl-2"><li>Omelette de 4 claras y 1 huevo entero con quesito (30g) y espinaca.</li><li>1 porción pequeña de fruta (150g papaya o melón).</li><li>Café negro o té verde sin azúcar.</li></ul></div>
+                            <div><p class="font-semibold text-accent">Opción 3:</p><ul class="list-disc list-inside text-gray-300 text-sm pl-2"><li>4 rollitos de jamón de pavo rellenos con 40g de quesito.</li><li>2 huevos cocidos.</li><li>1 arepa blanca delgada pequeña (30g).</li><li>Infusión caliente sin azúcar.</li></ul></div>
+                        </div>
+                    </div>
+                    <!-- Almuerzo -->
+                    <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl overflow-hidden shadow-soft print-card">
+                        <div class="bg-white/5 p-4 print-header"><h3 class="font-display text-xl font-bold text-white">Almuerzo / Pre-Entreno</h3><p class="text-sm text-gray-400">Alto en Proteína y Carbs</p></div>
+                        <div class="p-5 space-y-4">
+                             <div><p class="font-semibold text-accent">Opción 1:</p><ul class="list-disc list-inside text-gray-300 text-sm pl-2"><li>180g pechuga de pollo a la plancha.</li><li>5 cdas de arroz blanco (75g).</li><li>1/2 plátano maduro asado (70g).</li><li>Ensalada abundante (lechuga, tomate, pepino).</li></ul></div>
+                            <div><p class="font-semibold text-accent">Opción 2:</p><ul class="list-disc list-inside text-gray-300 text-sm pl-2"><li>180g carne de res magra.</li><li>1 pocillo tintero de frijoles (solo grano).</li><li>4 cdas de arroz blanco (60g).</li><li>Ensalada verde con 1 cdta aceite de oliva.</li></ul></div>
+                            <div><p class="font-semibold text-accent">Opción 3:</p><ul class="list-disc list-inside text-gray-300 text-sm pl-2"><li>180g carne molida magra guisada.</li><li>1 tajada mediana de plátano maduro cocido.</li><li>1 arepa blanca mediana (50g).</li><li>Ensalada fresca sin aderezos cremosos.</li></ul></div>
+                        </div>
+                    </div>
+                    <!-- Cena -->
+                    <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl overflow-hidden shadow-soft print-card">
+                        <div class="bg-white/5 p-4 print-header"><h3 class="font-display text-xl font-bold text-white">Cena / Post-Entreno</h3><p class="text-sm text-gray-400">Alto en Proteína, Moderado en Carbs</p></div>
+                        <div class="p-5 space-y-4">
+                             <div><p class="font-semibold text-accent">Opción 1:</p><ul class="list-disc list-inside text-gray-300 text-sm pl-2"><li>180g pechuga de pollo desmechada.</li><li>1 arepa blanca mediana (50g) tostada.</li><li>1/4 de aguacate pequeño (tipo guacamole).</li></ul></div>
+                            <div><p class="font-semibold text-accent">Opción 2:</p><ul class="list-disc list-inside text-gray-300 text-sm pl-2"><li>180g fajitas de lomo de res salteadas.</li><li>1 papa pastusa mediana cocida o 1/2 plátano asado.</li><li>1 porción de fruta dulce (manzana o fresas).</li></ul></div>
+                            <div><p class="font-semibold text-accent">Opción 3:</p><ul class="list-disc list-inside text-gray-300 text-sm pl-2"><li>180g pechuga de pollo en cubos.</li><li>1 porción de salpicón casero ligero.</li><li>1 tajada de quesito (30g).</li></ul></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rest Day Plan -->
+            <div id="rest-day" class="tab-content space-y-8 hidden">
+                <h2 class="font-display text-3xl font-bold text-white text-center print-section-title">Estructura: Días de Descanso</h2>
+                <div class="grid md:grid-cols-3 gap-6">
+                    <!-- Desayuno -->
+                    <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl overflow-hidden shadow-soft print-card">
+                        <div class="bg-white/5 p-4 print-header"><h3 class="font-display text-xl font-bold text-white">Desayuno</h3><p class="text-sm text-gray-400">Alto en Proteína y Grasa</p></div>
+                        <div class="p-5 space-y-4">
+                            <div><p class="font-semibold text-accent">Opción 1:</p><ul class="list-disc list-inside text-gray-300 text-sm pl-2"><li>3 huevos enteros fritos con espinaca.</li><li>1 porción de quesito asado (50g).</li><li>Café negro sin azúcar.</li></ul></div>
+                            <div><p class="font-semibold text-accent">Opción 2:</p><ul class="list-disc list-inside text-gray-300 text-sm pl-2"><li>2 huevos cocidos enteros.</li><li>3 tajadas de jamón de pavo.</li><li>1 tajada de quesito (30g) y 1/4 de aguacate.</li><li>Té verde o aromática sin azúcar.</li></ul></div>
+                            <div><p class="font-semibold text-accent">Opción 3:</p><ul class="list-disc list-inside text-gray-300 text-sm pl-2"><li>Omelette de 4 claras y 2 huevos enteros con 40g pollo desmechado.</li><li>Café o té sin azúcar.</li></ul></div>
+                        </div>
+                    </div>
+                    <!-- Almuerzo -->
+                    <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl overflow-hidden shadow-soft print-card">
+                        <div class="bg-white/5 p-4 print-header"><h3 class="font-display text-xl font-bold text-white">Almuerzo</h3><p class="text-sm text-gray-400">Alto en Proteína y Grasas Moderadas</p></div>
+                        <div class="p-5 space-y-4">
+                             <div><p class="font-semibold text-accent">Opción 1:</p><ul class="list-disc list-inside text-gray-300 text-sm pl-2"><li>200g pechuga de pollo asada.</li><li>1/3 de aguacate mediano.</li><li>Ensalada gigante (lechuga, pepino, cilantro).</li></ul></div>
+                            <div><p class="font-semibold text-accent">Opción 2:</p><ul class="list-disc list-inside text-gray-300 text-sm pl-2"><li>200g carne de res magra a la parrilla.</li><li>Ensalada de espinaca y calabacín salteado.</li><li>1 cda de aceite de oliva sobre la ensalada.</li></ul></div>
+                            <div><p class="font-semibold text-accent">Opción 3:</p><ul class="list-disc list-inside text-gray-300 text-sm pl-2"><li>200g carne molida magra guisada.</li><li>Puré de 1/3 de aguacate.</li><li>1 pocillo de habichuelas cocidas y salteadas.</li></ul></div>
+                        </div>
+                    </div>
+                    <!-- Cena -->
+                    <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl overflow-hidden shadow-soft print-card">
+                        <div class="bg-white/5 p-4 print-header"><h3 class="font-display text-xl font-bold text-white">Cena</h3><p class="text-sm text-gray-400">Alto en Proteína, Cero Carbs</p></div>
+                        <div class="p-5 space-y-4">
+                            <div><p class="font-semibold text-accent">Opción 1:</p><ul class="list-disc list-inside text-gray-300 text-sm pl-2"><li>200g lomo de res picado o fajitas.</li><li>1 tajada de quesito (40g).</li><li>Ensalada verde simple (lechuga y limón).</li></ul></div>
+                            <div><p class="font-semibold text-accent">Opción 2:</p><ul class="list-disc list-inside text-gray-300 text-sm pl-2"><li>200g pollo desmechado guisado.</li><li>Envuelto en hojas de lechuga batavia.</li><li>1 cda de aceite de oliva o 1/4 aguacate.</li></ul></div>
+                            <div><p class="font-semibold text-accent">Opción 3:</p><ul class="list-disc list-inside text-gray-300 text-sm pl-2"><li>3 huevos en cacerola con 60g carne desmechada.</li><li>Pepino cohombro en rodajas con sal y limón.</li></ul></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Comparative Analysis -->
+        <section class="mt-12">
+            <h2 class="font-display text-3xl font-bold text-white text-center mb-6 print-section-title">Análisis Comparativo</h2>
+            <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl overflow-hidden shadow-soft print-card">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left print-table">
+                        <thead class="bg-white/5 text-xs text-gray-300 uppercase tracking-wider print-header">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 font-semibold">Aspecto</th>
+                                <th scope="col" class="px-6 py-3 font-semibold">Dieta Actual</th>
+                                <th scope="col" class="px-6 py-3 font-semibold text-accent">Nuevo Plan Nutricional</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-white/10">
+                                <th scope="row" class="px-6 py-4 font-medium text-white whitespace-nowrap">Bebidas y Azúcares</th>
+                                <td class="px-6 py-4 text-gray-300">Chocolate y jugos en el desayuno.</td>
+                                <td class="px-6 py-4 font-medium text-gray-200">Transición a café (tinto), té o aromáticas sin azúcar para eliminar calorías líquidas.</td>
+                            </tr>
+                            <tr class="border-b border-white/10">
+                                <th scope="row" class="px-6 py-4 font-medium text-white whitespace-nowrap">Carga de Carbohidratos</th>
+                                <td class="px-6 py-4 text-gray-300">Mezcla de varios carbohidratos por comida y dulces (galletas) en la noche.</td>
+                                <td class="px-6 py-4 font-medium text-gray-200">Ciclado estricto: Carbohidratos medidos solo en días de pesas y ubicados estratégicamente alrededor del entrenamiento.</td>
+                            </tr>
+                             <tr class="border-b border-white/10">
+                                <th scope="row" class="px-6 py-4 font-medium text-white whitespace-nowrap">Aporte de Proteína</th>
+                                <td class="px-6 py-4 text-gray-300">Deficiente para el objetivo de recomposición corporal.</td>
+                                <td class="px-6 py-4 font-medium text-gray-200">Alto y constante (146g/día). Garantiza saciedad, protege el músculo y aumenta el gasto calórico digestivo.</td>
+                            </tr>
+                            <tr>
+                                <th scope="row" class="px-6 py-4 font-medium text-white whitespace-nowrap">Densidad Nutricional</th>
+                                <td class="px-6 py-4 text-gray-300">Poca presencia de vegetales y grasas estructuradas.</td>
+                                <td class="px-6 py-4 font-medium text-gray-200">Integración sistemática de aguacate, aceite de oliva y vegetales verdes de libre consumo.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Hydration Recommendation -->
+        <section class="mt-12">
+             <div class="bg-accent/20 border border-accent rounded-2xl p-6 text-center shadow-soft print-card">
+                <h3 class="font-display text-xl font-bold text-accent">Recomendación de Hidratación</h3>
+                <p class="mt-2 text-gray-200">Consumir un mínimo de <span class="font-bold text-white text-lg">3 litros de agua diarios</span> para procesar el incremento de proteína y optimizar el rendimiento deportivo.</p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Floating Action Button for Print -->
+    <button id="print-fab" class="fixed bottom-6 right-6 bg-accent hover:bg-accent-dark text-white rounded-full p-4 shadow-lg hover:shadow-glow-accent focus:outline-none focus:ring-4 focus:ring-accent/50 transition-all duration-300 ease-in-out transform hover:scale-110 no-print" onclick="window.print()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+        </svg>
+    </button>
+
+    <script>
+        const tabTraining = document.getElementById('tab-training');
+        const tabRest = document.getElementById('tab-rest');
+        const contentTraining = document.getElementById('training-day');
+        const contentRest = document.getElementById('rest-day');
+        const tabButtons = document.querySelectorAll('.tab-btn');
+
+        function switchTab(activeTab) {
+            tabButtons.forEach(btn => {
+                btn.classList.remove('active', 'bg-accent', 'text-white', 'shadow-md');
+                btn.classList.add('text-gray-300', 'hover:bg-brand-dark');
+            });
+
+            activeTab.classList.add('active', 'bg-accent', 'text-white', 'shadow-md');
+            activeTab.classList.remove('text-gray-300', 'hover:bg-brand-dark');
+
+            if (activeTab.id === 'tab-training') {
+                contentTraining.classList.remove('hidden');
+                contentRest.classList.add('hidden');
+            } else {
+                contentTraining.classList.add('hidden');
+                contentRest.classList.remove('hidden');
+            }
+        }
+
+        tabTraining.addEventListener('click', () => switchTab(tabTraining));
+        tabRest.addEventListener('click', () => switchTab(tabRest));
+
+        // Initial state
+        switchTab(tabTraining);
+        tabTraining.style.transition = 'none'; // prevent initial animation
+        requestAnimationFrame(() => {
+             tabTraining.style.transition = '';
+        });
+    </script>
+</body>
+</html>

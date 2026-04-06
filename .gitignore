@@ -1,0 +1,18 @@
+# Dependencies & package manager
+node_modules/
+.npm/
+
+# OS & editor
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Env (si añades API keys más adelante)
+.env
+.env.local
