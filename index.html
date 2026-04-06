@@ -35,17 +35,23 @@
             </p>
         </header>
 
-        <div class="flex justify-center">
+        <div class="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <a
                 href="/login.html"
                 class="inline-flex rounded-xl bg-accent px-8 py-3 font-semibold text-white shadow-lg transition hover:opacity-90"
             >
                 Ingresar a mi plan
             </a>
+            <a
+                href="/register.html"
+                class="inline-flex rounded-xl border border-accent px-8 py-3 font-semibold text-accent transition hover:bg-accent/10"
+            >
+                Crear cuenta
+            </a>
         </div>
 
         <footer class="mt-16 text-center text-xs text-gray-500">
-            Si aún no tienes acceso, solicita tu usuario al nutricionista.
+            Si aún no tienes cuenta, <a href="/register.html" class="text-accent hover:underline">regístrate aquí</a>.
         </footer>
     </div>
 

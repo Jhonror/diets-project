@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Planes nutricionales</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { brand: "#2c3e50", accent: "#27ae60" },
+          fontFamily: { sans: ["Inter", "sans-serif"], display: ["Outfit", "sans-serif"] },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-brand via-slate-900 to-black font-sans text-gray-200 antialiased">
+  <div class="mx-auto max-w-4xl px-6 py-10">
+
+    <!-- Header -->
+    <header class="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <p class="text-sm text-gray-400" id="who"></p>
+        <h1 class="font-display text-3xl font-bold text-white">Panel de administracion</h1>
+      </div>
+      <div class="flex items-center gap-3">
+        <a href="/app.html" class="rounded-lg border border-white/20 px-4 py-2 text-sm text-gray-300 hover:bg-white/10">Mis planes</a>
+        <button type="button" id="logout" class="rounded-lg border border-white/20 px-4 py-2 text-sm text-gray-300 hover:bg-white/10">Cerrar sesion</button>
+      </div>
+    </header>
+
+    <p id="cfg-err" class="mt-6 hidden rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200"></p>
+    <p id="access-denied" class="mt-10 hidden text-center text-red-300">No tienes permisos de administrador.</p>
+
+    <!-- Section 1: User list -->
+    <section id="sec-users" class="mt-8 hidden">
+      <h2 class="font-display text-xl font-semibold text-white mb-4">Usuarios registrados</h2>
+      <div id="users-loading" class="text-gray-400">Cargando usuarios...</div>
+      <div class="overflow-x-auto">
+        <table id="users-table" class="hidden w-full text-sm">
+          <thead>
+            <tr class="border-b border-white/10 text-left text-gray-400">
+              <th class="pb-2 pr-4">Correo</th>
+              <th class="pb-2 pr-4">Rol</th>
+              <th class="pb-2 pr-4">Registro</th>
+              <th class="pb-2"></th>
+            </tr>
+          </thead>
+          <tbody id="users-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Section 2: Selected user's plans -->
+    <section id="sec-plans" class="mt-8 hidden">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div>
+          <button type="button" id="back-users" class="text-sm text-accent hover:underline">&larr; Volver a usuarios</button>
+          <h2 class="font-display text-xl font-semibold text-white mt-1">Planes de <span id="plan-user-email" class="text-accent"></span></h2>
+        </div>
+        <button type="button" id="btn-new-plan" class="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white hover:opacity-90">+ Asignar plan</button>
+      </div>
+      <div id="plans-loading" class="text-gray-400">Cargando planes...</div>
+      <ul id="plans-list" class="hidden space-y-3"></ul>
+      <p id="plans-empty" class="hidden text-gray-400">Este usuario no tiene planes asignados.</p>
+    </section>
+
+    <!-- Section 3: Upload form -->
+    <section id="sec-upload" class="mt-8 hidden">
+      <button type="button" id="back-plans" class="text-sm text-accent hover:underline mb-4">&larr; Volver a planes</button>
+      <div class="rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur max-w-lg">
+        <h2 class="font-display text-xl font-semibold text-white mb-6">Subir plan para <span id="upload-user-email" class="text-accent"></span></h2>
+        <form id="upload-form" class="space-y-4">
+          <div>
+            <label for="plan-title" class="block text-sm font-medium text-gray-300">Titulo del plan</label>
+            <input id="plan-title" type="text" required placeholder="Ej: Plan nutricional — Maria Lopez"
+              class="mt-1 w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent" />
+          </div>
+          <div>
+            <label for="plan-slug" class="block text-sm font-medium text-gray-300">Slug (URL)</label>
+            <input id="plan-slug" type="text" required placeholder="plan-nutricional-maria-lopez"
+              class="mt-1 w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent" />
+            <p class="mt-1 text-xs text-gray-500">Se genera automaticamente del titulo. Puedes editarlo.</p>
+          </div>
+          <div>
+            <label for="plan-type" class="block text-sm font-medium text-gray-300">Tipo</label>
+            <select id="plan-type"
+              class="mt-1 w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-white focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent">
+              <option value="diet">Dieta</option>
+              <option value="training">Programa de entrenamiento</option>
+            </select>
+          </div>
+          <div>
+            <label for="plan-file" class="block text-sm font-medium text-gray-300">Archivo HTML</label>
+            <input id="plan-file" type="file" accept=".html,.htm" required
+              class="mt-1 w-full text-sm text-gray-400 file:mr-3 file:rounded-lg file:border-0 file:bg-accent/20 file:px-4 file:py-2 file:text-sm file:font-medium file:text-accent hover:file:bg-accent/30" />
+          </div>
+          <p id="upload-err" class="hidden text-sm text-red-400"></p>
+          <p id="upload-ok" class="hidden text-sm text-green-400"></p>
+          <button type="submit" id="upload-btn"
+            class="w-full rounded-lg bg-accent py-2.5 font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
+            Subir plan
+          </button>
+        </form>
+      </div>
+    </section>
+
+  </div>
+
+  <script src="/js/supabase-config.js"></script>
+  <script type="module">
+    import { getSupabase } from "/js/supabase-init.js";
+
+    const cfgErr = document.getElementById("cfg-err");
+    const secUsers = document.getElementById("sec-users");
+    const secPlans = document.getElementById("sec-plans");
+    const secUpload = document.getElementById("sec-upload");
+
+    let supabase;
+    try {
+      supabase = getSupabase();
+    } catch (e) {
+      cfgErr.textContent = e.message;
+      cfgErr.classList.remove("hidden");
+      throw e;
+    }
+
+    // --- Auth check ---
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) { window.location.replace("/login.html"); throw new Error("no session"); }
+
+    document.getElementById("who").textContent = session.user.email;
+
+    supabase.auth.onAuthStateChange((_e, s) => {
+      if (!s) window.location.replace("/login.html");
+    });
+
+    document.getElementById("logout").addEventListener("click", async () => {
+      await supabase.auth.signOut();
+      window.location.replace("/login.html");
+    });
+
+    // --- Admin check ---
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", session.user.id)
+      .single();
+
+    if (profile?.role !== "admin") {
+      document.getElementById("access-denied").classList.remove("hidden");
+      setTimeout(() => window.location.replace("/app.html"), 2000);
+      throw new Error("not admin");
+    }
+
+    // --- State ---
+    let selectedUserId = null;
+    let selectedUserEmail = "";
+
+    // --- Helpers ---
+    function show(sec) {
+      [secUsers, secPlans, secUpload].forEach(s => s.classList.add("hidden"));
+      sec.classList.remove("hidden");
+    }
+
+    function slugify(text) {
+      return text
+        .toLowerCase()
+        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+    }
+
+    function escapeHtml(s) {
+      const d = document.createElement("div");
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    function fmtDate(iso) {
+      return new Date(iso).toLocaleDateString("es", { year: "numeric", month: "short", day: "numeric" });
+    }
+
+    // --- Section 1: Load users ---
+    async function loadUsers() {
+      show(secUsers);
+      const loading = document.getElementById("users-loading");
+      const table = document.getElementById("users-table");
+      const tbody = document.getElementById("users-body");
+
+      loading.classList.remove("hidden");
+      table.classList.add("hidden");
+
+      const { data: users, error } = await supabase
+        .from("profiles")
+        .select("id, email, role, created_at")
+        .order("created_at", { ascending: true });
+
+      loading.classList.add("hidden");
+
+      if (error) {
+        cfgErr.textContent = error.message;
+        cfgErr.classList.remove("hidden");
+        return;
+      }
+
+      tbody.innerHTML = "";
+      for (const u of users) {
+        const tr = document.createElement("tr");
+        tr.className = "border-b border-white/5 hover:bg-white/5";
+        tr.innerHTML = `
+          <td class="py-3 pr-4">${escapeHtml(u.email)}</td>
+          <td class="py-3 pr-4"><span class="rounded-full px-2 py-0.5 text-xs ${u.role === 'admin' ? 'bg-accent/20 text-accent' : 'bg-white/10 text-gray-400'}">${u.role}</span></td>
+          <td class="py-3 pr-4 text-gray-400">${fmtDate(u.created_at)}</td>
+          <td class="py-3"><button class="text-sm text-accent hover:underline" data-uid="${u.id}" data-email="${escapeHtml(u.email)}">Ver planes</button></td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      table.classList.remove("hidden");
+
+      tbody.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-uid]");
+        if (!btn) return;
+        selectedUserId = btn.dataset.uid;
+        selectedUserEmail = btn.dataset.email;
+        loadPlans();
+      });
+    }
+
+    // --- Section 2: Load plans for a user ---
+    async function loadPlans() {
+      show(secPlans);
+      document.getElementById("plan-user-email").textContent = selectedUserEmail;
+
+      const loading = document.getElementById("plans-loading");
+      const list = document.getElementById("plans-list");
+      const empty = document.getElementById("plans-empty");
+
+      loading.classList.remove("hidden");
+      list.classList.add("hidden");
+      empty.classList.add("hidden");
+
+      const { data: plans, error } = await supabase
+        .from("diets")
+        .select("id, slug, title, type, created_at")
+        .eq("user_id", selectedUserId)
+        .order("created_at", { ascending: true });
+
+      loading.classList.add("hidden");
+
+      if (error) {
+        cfgErr.textContent = error.message;
+        cfgErr.classList.remove("hidden");
+        return;
+      }
+
+      if (!plans?.length) {
+        empty.classList.remove("hidden");
+        return;
+      }
+
+      list.innerHTML = "";
+      for (const p of plans) {
+        const li = document.createElement("li");
+        const typeLabel = p.type === "training" ? "Entrenamiento" : "Dieta";
+        li.innerHTML = `
+          <div class="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur">
+            <div>
+              <p class="font-display text-lg font-semibold text-white">${escapeHtml(p.title)}</p>
+              <p class="mt-1 text-xs text-gray-400">${typeLabel} &middot; ${escapeHtml(p.slug)} &middot; ${fmtDate(p.created_at)}</p>
+            </div>
+            <button class="delete-plan rounded-lg border border-red-500/30 px-3 py-1.5 text-xs text-red-400 hover:bg-red-500/10" data-id="${p.id}" data-title="${escapeHtml(p.title)}">Eliminar</button>
+          </div>
+        `;
+        list.appendChild(li);
+      }
+      list.classList.remove("hidden");
+    }
+
+    // --- Delete plan ---
+    document.getElementById("plans-list").addEventListener("click", async (e) => {
+      const btn = e.target.closest(".delete-plan");
+      if (!btn) return;
+      const title = btn.dataset.title;
+      if (!confirm(`Eliminar "${title}"? Esta accion no se puede deshacer.`)) return;
+
+      btn.disabled = true;
+      btn.textContent = "Eliminando...";
+      const { error } = await supabase.from("diets").delete().eq("id", btn.dataset.id);
+      if (error) {
+        alert("Error: " + error.message);
+        btn.disabled = false;
+        btn.textContent = "Eliminar";
+        return;
+      }
+      loadPlans();
+    });
+
+    // --- Navigation ---
+    document.getElementById("back-users").addEventListener("click", loadUsers);
+    document.getElementById("back-plans").addEventListener("click", loadPlans);
+    document.getElementById("btn-new-plan").addEventListener("click", () => {
+      show(secUpload);
+      document.getElementById("upload-user-email").textContent = selectedUserEmail;
+      document.getElementById("upload-form").reset();
+      document.getElementById("upload-err").classList.add("hidden");
+      document.getElementById("upload-ok").classList.add("hidden");
+    });
+
+    // --- Auto-generate slug from title ---
+    document.getElementById("plan-title").addEventListener("input", (e) => {
+      document.getElementById("plan-slug").value = slugify(e.target.value);
+    });
+
+    // --- Upload plan ---
+    document.getElementById("upload-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const uploadErr = document.getElementById("upload-err");
+      const uploadOk = document.getElementById("upload-ok");
+      const uploadBtn = document.getElementById("upload-btn");
+
+      uploadErr.classList.add("hidden");
+      uploadOk.classList.add("hidden");
+
+      const title = document.getElementById("plan-title").value.trim();
+      const slug = document.getElementById("plan-slug").value.trim();
+      const type = document.getElementById("plan-type").value;
+      const fileInput = document.getElementById("plan-file");
+
+      if (!fileInput.files.length) {
+        uploadErr.textContent = "Selecciona un archivo HTML.";
+        uploadErr.classList.remove("hidden");
+        return;
+      }
+
+      uploadBtn.disabled = true;
+      uploadBtn.textContent = "Subiendo...";
+
+      try {
+        const body_html = await fileInput.files[0].text();
+
+        const { error } = await supabase.from("diets").insert({
+          user_id: selectedUserId,
+          slug,
+          title,
+          body_html,
+          type,
+        });
+
+        if (error) {
+          if (error.message.includes("duplicate") || error.message.includes("unique")) {
+            uploadErr.textContent = "Ya existe un plan con ese slug para este usuario. Cambia el slug.";
+          } else {
+            uploadErr.textContent = error.message;
+          }
+          uploadErr.classList.remove("hidden");
+          return;
+        }
+
+        uploadOk.textContent = "Plan subido correctamente.";
+        uploadOk.classList.remove("hidden");
+        document.getElementById("upload-form").reset();
+        setTimeout(() => loadPlans(), 1500);
+      } finally {
+        uploadBtn.disabled = false;
+        uploadBtn.textContent = "Subir plan";
+      }
+    });
+
+    // --- Init ---
+    loadUsers();
+  </script>
+</body>
+</html>
