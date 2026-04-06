@@ -48,5 +48,51 @@
             Si aún no tienes acceso, solicita tu usuario al nutricionista.
         </footer>
     </div>
+
+    <!-- Invitaciones / magic links de Supabase redirigen a la Site URL (#access_token=… o ?code=…).
+         Sin esto, la raíz no “absorbe” la sesión y parece que solo abres la app. -->
+    <script src="/js/supabase-config.js"></script>
+    <script type="module">
+        import { getSupabase } from "/js/supabase-init.js";
+
+        function stripAuthFromUrl() {
+            const p = window.location.pathname;
+            const q = window.location.search;
+            window.history.replaceState(null, "", p + q);
+        }
+
+        (async () => {
+            try {
+                const sb = getSupabase();
+
+                const onRoot = () => {
+                    const p = window.location.pathname;
+                    return p === "/" || p === "/index.html";
+                };
+
+                const goApp = () => {
+                    stripAuthFromUrl();
+                    window.location.replace("/app.html");
+                };
+
+                const {
+                    data: { session: existing },
+                } = await sb.auth.getSession();
+                if (existing && onRoot()) {
+                    goApp();
+                    return;
+                }
+
+                sb.auth.onAuthStateChange((event, session) => {
+                    if (!session || !onRoot()) return;
+                    if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
+                        goApp();
+                    }
+                });
+            } catch (_) {
+                /* build sin supabase-config */
+            }
+        })();
+    </script>
 </body>
 </html>
