@@ -28,7 +28,7 @@ const DIETS = [
     file: "karen_rivera.html",
   },
   {
-    email: process.env.SEED_EMAIL_JHON || "jhon.jromerot@gmail.com",
+    email: process.env.SEED_EMAIL_JHON || "cliente2@example.com",
     slug: "jhon_romero",
     title: "Plan nutricional — Jhon Romero",
     file: "jhon_romero.html",

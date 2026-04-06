@@ -13,9 +13,11 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# Env (si añades API keys más adelante)
+# Env y secretos (nunca en Git)
 .env
 .env.local
+.env.*
+!.env.example
 
-# Generado en build (Netlify) o copia local desde js/supabase-config.example.js
+# Generado en build (Netlify) o desde .env local; puede contener anon key
 js/supabase-config.js
