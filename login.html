@@ -35,9 +35,13 @@
             class="mt-1 w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent" />
         </div>
         <p id="err" class="hidden text-sm text-red-400" role="alert"></p>
+        <p id="recovery-ok" class="hidden text-sm text-green-400" role="status"></p>
         <button type="submit" id="btn"
           class="w-full rounded-lg bg-accent py-2.5 font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
           Entrar
+        </button>
+        <button type="button" id="forgot-btn" class="w-full text-sm text-gray-400 hover:text-accent mt-2">
+          Olvidaste tu contraseña?
         </button>
       </form>
 
@@ -100,6 +104,31 @@
           err.classList.remove("hidden");
           gBtn.disabled = false;
         }
+      });
+
+      document.getElementById("forgot-btn").addEventListener("click", async () => {
+        err.classList.add("hidden");
+        const recoveryOk = document.getElementById("recovery-ok");
+        recoveryOk.classList.add("hidden");
+        const email = document.getElementById("email").value.trim();
+        if (!email) {
+          err.textContent = "Escribe tu correo arriba para recuperar la contraseña.";
+          err.classList.remove("hidden");
+          return;
+        }
+        const forgotBtn = document.getElementById("forgot-btn");
+        forgotBtn.disabled = true;
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + "/",
+        });
+        forgotBtn.disabled = false;
+        if (error) {
+          err.textContent = error.message;
+          err.classList.remove("hidden");
+          return;
+        }
+        recoveryOk.textContent = "Revisa tu correo. Te enviamos un enlace para crear una nueva contraseña.";
+        recoveryOk.classList.remove("hidden");
       });
 
       form.addEventListener("submit", async (e) => {
