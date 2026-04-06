@@ -67,17 +67,18 @@ async function findUserIdByEmail(email) {
 }
 
 async function main() {
+  const seeded = [];
+  const skipped = [];
+
   for (const row of DIETS) {
     const userId = await findUserIdByEmail(row.email);
     if (!userId) {
-      console.error(
-        `No existe un usuario en Supabase Auth con el correo: ${row.email}\n\n` +
-          `Opciones:\n` +
-          `  • Supabase → Authentication → Users → Add user → crea ese correo con contraseña.\n` +
-          `  • O ajusta el correo en .env: SEED_EMAIL_KAREN / SEED_EMAIL_JHON (o edita el array DIETS en este script).\n` +
-          `El correo del seed debe coincidir exactamente con el del usuario en Auth.`
+      console.warn(
+        `Omitido ${row.slug}: no hay usuario en Auth con correo ${row.email}\n` +
+          `  → Crea el usuario en Supabase → Authentication → Users, o ajusta SEED_EMAIL_* en .env`
       );
-      process.exit(1);
+      skipped.push(row);
+      continue;
     }
     const filePath = path.join(root, "content", "diets", row.file);
     const body_html = fs.readFileSync(filePath, "utf8");
@@ -94,8 +95,20 @@ async function main() {
       process.exit(1);
     }
     console.log("Seeded:", row.slug, "→", row.email);
+    seeded.push(row);
   }
-  console.log("Done.");
+
+  if (seeded.length === 0) {
+    console.error("No se importó ningún plan: todos los correos faltan en Auth.");
+    process.exit(1);
+  }
+  if (skipped.length > 0) {
+    console.log(
+      `\nListo (${seeded.length} plan(es)). Cuando crees los usuarios faltantes en Auth, vuelve a ejecutar: npm run seed`
+    );
+  } else {
+    console.log("Done.");
+  }
 }
 
 main().catch((e) => {
