@@ -1,15 +1,26 @@
-# Static site: each client folder has its own index.html.
-# URLs: / → index.html, /karen_rivera/ → karen_rivera/index.html, etc.
+# Build injects Supabase URL + anon key into js/supabase-config.js from Netlify env vars.
 
 [build]
+  command = "npm run build"
   publish = "."
 
+# Rutas públicas antiguas → login (los planes ya no se sirven por carpeta)
 [[redirects]]
   from = "/karen_rivera"
-  to = "/karen_rivera/"
-  status = 301
+  to = "/login.html"
+  status = 302
+
+[[redirects]]
+  from = "/karen_rivera/*"
+  to = "/login.html"
+  status = 302
 
 [[redirects]]
   from = "/jhon_romero"
-  to = "/jhon_romero/"
-  status = 301
+  to = "/login.html"
+  status = 302
+
+[[redirects]]
+  from = "/jhon_romero/*"
+  to = "/login.html"
+  status = 302

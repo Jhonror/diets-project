@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi plan — Nutrición</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { brand: "#2c3e50", accent: "#27ae60" },
+          fontFamily: { sans: ["Inter", "sans-serif"], display: ["Outfit", "sans-serif"] },
+        },
+      },
+    };
+  </script>
+  <style>
+    #frame { min-height: calc(100vh - 5rem); }
+  </style>
+</head>
+<body class="min-h-screen bg-black font-sans antialiased">
+  <div class="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-white/10 bg-brand/95 px-4 py-3 backdrop-blur">
+    <a href="/app.html" class="text-sm font-medium text-accent hover:underline">← Volver a mis planes</a>
+    <button type="button" id="logout" class="text-sm text-gray-300 hover:text-white">Cerrar sesión</button>
+  </div>
+  <p id="cfg-err" class="hidden p-4 text-sm text-red-300"></p>
+  <p id="msg" class="p-4 text-center text-gray-400">Cargando plan…</p>
+  <iframe id="frame" class="hidden w-full border-0 bg-white" title="Plan nutricional" sandbox="allow-scripts allow-same-origin"></iframe>
+
+  <script src="/js/supabase-config.js"></script>
+  <script type="module">
+    import { getSupabase } from "/js/supabase-init.js";
+
+    const params = new URLSearchParams(window.location.search);
+    const slug = params.get("slug");
+    const msg = document.getElementById("msg");
+    const frame = document.getElementById("frame");
+    const cfgErr = document.getElementById("cfg-err");
+
+    let supabase;
+    try {
+      supabase = getSupabase();
+    } catch (e) {
+      msg.classList.add("hidden");
+      cfgErr.textContent = e.message;
+      cfgErr.classList.remove("hidden");
+      throw e;
+    }
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      window.location.replace("/login.html");
+    }
+
+    supabase.auth.onAuthStateChange((_e, s) => {
+      if (!s?.session) window.location.replace("/login.html");
+    });
+
+    document.getElementById("logout").addEventListener("click", async () => {
+      await supabase.auth.signOut();
+      window.location.replace("/login.html");
+    });
+
+    if (!slug) {
+      msg.textContent = "Falta el parámetro slug en la URL.";
+    } else {
+      const { data, error } = await supabase
+        .from("diets")
+        .select("body_html, title")
+        .eq("slug", slug)
+        .maybeSingle();
+
+      if (error) {
+        msg.textContent = error.message;
+      } else if (!data) {
+        msg.textContent = "No encontramos este plan o no tienes permiso para verlo.";
+      } else {
+        document.title = `${data.title} — Nutrición`;
+        msg.classList.add("hidden");
+        frame.classList.remove("hidden");
+        frame.srcdoc = data.body_html;
+      }
+    }
+  </script>
+</body>
+</html>

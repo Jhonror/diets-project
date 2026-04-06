@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis planes — Nutrición</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { brand: "#2c3e50", accent: "#27ae60" },
+          fontFamily: { sans: ["Inter", "sans-serif"], display: ["Outfit", "sans-serif"] },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-brand via-slate-900 to-black font-sans text-gray-200 antialiased">
+  <div class="mx-auto max-w-2xl px-6 py-10">
+    <header class="flex flex-wrap items-center justify-between gap-4">
+      <div>
+        <p class="text-sm text-gray-400" id="who"></p>
+        <h1 class="font-display text-3xl font-bold text-white">Tus planes</h1>
+      </div>
+      <button type="button" id="logout"
+        class="rounded-lg border border-white/20 px-4 py-2 text-sm text-gray-300 hover:bg-white/10">
+        Cerrar sesión
+      </button>
+    </header>
+
+    <p id="cfg-err" class="mt-6 hidden rounded-lg border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-200"></p>
+
+    <div id="loading" class="mt-10 text-center text-gray-400">Cargando…</div>
+    <ul id="list" class="mt-8 hidden space-y-3"></ul>
+    <p id="empty" class="mt-10 hidden text-center text-gray-400">No hay planes asignados a tu cuenta.</p>
+  </div>
+
+  <script src="/js/supabase-config.js"></script>
+  <script type="module">
+    import { getSupabase } from "/js/supabase-init.js";
+
+    const loading = document.getElementById("loading");
+    const list = document.getElementById("list");
+    const empty = document.getElementById("empty");
+    const who = document.getElementById("who");
+    const cfgErr = document.getElementById("cfg-err");
+
+    let supabase;
+    try {
+      supabase = getSupabase();
+    } catch (e) {
+      loading.classList.add("hidden");
+      cfgErr.textContent = e.message;
+      cfgErr.classList.remove("hidden");
+      throw e;
+    }
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      window.location.replace("/login.html");
+    } else {
+      who.textContent = session.user.email || "Sesión activa";
+    }
+
+    supabase.auth.onAuthStateChange((_e, s) => {
+      if (!s?.session) window.location.replace("/login.html");
+    });
+
+    document.getElementById("logout").addEventListener("click", async () => {
+      await supabase.auth.signOut();
+      window.location.replace("/login.html");
+    });
+
+    if (session) {
+      const { data: rows, error } = await supabase
+        .from("diets")
+        .select("slug, title, created_at")
+        .order("created_at", { ascending: true });
+
+      loading.classList.add("hidden");
+
+      if (error) {
+        cfgErr.textContent = error.message;
+        cfgErr.classList.remove("hidden");
+      } else if (!rows?.length) {
+        empty.classList.remove("hidden");
+      } else {
+        list.classList.remove("hidden");
+        for (const r of rows) {
+          const li = document.createElement("li");
+          li.innerHTML = `
+            <a href="/diet.html?slug=${encodeURIComponent(r.slug)}"
+              class="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur transition hover:border-accent/40 hover:bg-white/10">
+              <span class="font-display text-lg font-semibold text-white">${escapeHtml(r.title)}</span>
+              <span class="text-accent">Ver →</span>
+            </a>`;
+          list.appendChild(li);
+        }
+      }
+    }
+
+    function escapeHtml(s) {
+      const d = document.createElement("div");
+      d.textContent = s;
+      return d.innerHTML;
+    }
+  </script>
+</body>
+</html>

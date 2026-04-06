@@ -1,0 +1,12 @@
+{
+  "name": "diets-project",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/generate-supabase-config.js",
+    "seed": "node scripts/seed-diets.mjs"
+  },
+  "devDependencies": {
+    "@supabase/supabase-js": "^2.49.1",
+    "dotenv": "^16.4.7"
+  }
+}

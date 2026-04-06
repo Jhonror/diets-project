@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ingresar — Planes nutricionales</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { brand: "#2c3e50", accent: "#27ae60" },
+          fontFamily: { sans: ["Inter", "sans-serif"], display: ["Outfit", "sans-serif"] },
+        },
+      },
+    };
+  </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-brand via-slate-900 to-black font-sans text-gray-200 antialiased">
+  <div class="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-12">
+    <a href="/" class="mb-8 text-center text-sm text-gray-400 hover:text-white">← Volver al inicio</a>
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur">
+      <h1 class="font-display text-2xl font-bold text-white">Acceso a tu plan</h1>
+      <p class="mt-2 text-sm text-gray-400">Usa el correo y contraseña que te indicaron.</p>
+      <form id="form" class="mt-8 space-y-4">
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-300">Correo</label>
+          <input id="email" type="email" required autocomplete="username"
+            class="mt-1 w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent" />
+        </div>
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-300">Contraseña</label>
+          <input id="password" type="password" required autocomplete="current-password"
+            class="mt-1 w-full rounded-lg border border-white/10 bg-black/30 px-3 py-2 text-white placeholder-gray-500 focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent" />
+        </div>
+        <p id="err" class="hidden text-sm text-red-400" role="alert"></p>
+        <button type="submit" id="btn"
+          class="w-full rounded-lg bg-accent py-2.5 font-semibold text-white transition hover:opacity-90 disabled:opacity-50">
+          Entrar
+        </button>
+      </form>
+    </div>
+  </div>
+  <script src="/js/supabase-config.js"></script>
+  <script type="module">
+    import { getSupabase } from "/js/supabase-init.js";
+
+    const form = document.getElementById("form");
+    const err = document.getElementById("err");
+    const btn = document.getElementById("btn");
+
+    let supabase;
+    try {
+      supabase = getSupabase();
+    } catch (e) {
+      err.textContent = e.message;
+      err.classList.remove("hidden");
+      btn.disabled = true;
+    }
+
+    if (supabase) {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        window.location.replace("/app.html");
+      }
+
+      supabase.auth.onAuthStateChange((_e, s) => {
+        if (s?.session) window.location.replace("/app.html");
+      });
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        err.classList.add("hidden");
+        btn.disabled = true;
+        const email = document.getElementById("email").value.trim();
+        const password = document.getElementById("password").value;
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        btn.disabled = false;
+        if (error) {
+          err.textContent = error.message === "Invalid login credentials"
+            ? "Correo o contraseña incorrectos."
+            : error.message;
+          err.classList.remove("hidden");
+          return;
+        }
+        window.location.replace("/app.html");
+      });
+    }
+  </script>
+</body>
+</html>
