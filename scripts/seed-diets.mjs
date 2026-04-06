@@ -27,7 +27,7 @@ const DIETS = [
     file: "karen_rivera.html",
   },
   {
-    email: "jhon@example.com",
+    email: "jhon.jromerot@gmail.com",
     slug: "jhon_romero",
     title: "Plan nutricional — Jhon Romero",
     file: "jhon_romero.html",
@@ -38,7 +38,12 @@ const url = process.env.SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 if (!url || !serviceKey) {
-  console.error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY in .env");
+  console.error(
+    "Faltan SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY.\n" +
+      "  1) Copia .env.example a .env en la raíz del proyecto.\n" +
+      "  2) Supabase → Project Settings → API: pega Project URL y la key service_role (secreta).\n" +
+      "  3) Vuelve a ejecutar: npm run seed"
+  );
   process.exit(1);
 }
 
