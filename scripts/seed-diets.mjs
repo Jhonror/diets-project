@@ -5,7 +5,8 @@
  * 1. Run supabase/schema.sql in the Supabase SQL editor.
  * 2. Create users in Supabase → Authentication → Users (email + password).
  * 3. Copy .env.example to .env and fill SUPABASE_URL + SERVICE_ROLE_KEY (never commit .env).
- * 4. Edit DIETS below with the same emails you created.
+ * 4. Mismos correos que en Supabase Auth: edita el array DIETS o define en .env:
+ *    SEED_EMAIL_KAREN=... y SEED_EMAIL_JHON=...
  *
  * Run: npm run seed
  */
@@ -21,13 +22,13 @@ const root = path.join(__dirname, "..");
 
 const DIETS = [
   {
-    email: "karen@example.com",
+    email: process.env.SEED_EMAIL_KAREN || "karen@example.com",
     slug: "karen_rivera",
     title: "Plan nutricional — Karen Rivera",
     file: "karen_rivera.html",
   },
   {
-    email: "jhon.jromerot@gmail.com",
+    email: process.env.SEED_EMAIL_JHON || "jhon.jromerot@gmail.com",
     slug: "jhon_romero",
     title: "Plan nutricional — Jhon Romero",
     file: "jhon_romero.html",
@@ -69,7 +70,13 @@ async function main() {
   for (const row of DIETS) {
     const userId = await findUserIdByEmail(row.email);
     if (!userId) {
-      console.error(`No Auth user with email: ${row.email} — create the user in Supabase first.`);
+      console.error(
+        `No existe un usuario en Supabase Auth con el correo: ${row.email}\n\n` +
+          `Opciones:\n` +
+          `  • Supabase → Authentication → Users → Add user → crea ese correo con contraseña.\n` +
+          `  • O ajusta el correo en .env: SEED_EMAIL_KAREN / SEED_EMAIL_JHON (o edita el array DIETS en este script).\n` +
+          `El correo del seed debe coincidir exactamente con el del usuario en Auth.`
+      );
       process.exit(1);
     }
     const filePath = path.join(root, "content", "diets", row.file);
