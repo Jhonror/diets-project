@@ -15,6 +15,8 @@ create index if not exists diets_user_id_idx on public.diets (user_id);
 
 alter table public.diets enable row level security;
 
+drop policy if exists "diets_select_own" on public.diets;
+
 -- Authenticated users: read only their rows
 create policy "diets_select_own"
   on public.diets
