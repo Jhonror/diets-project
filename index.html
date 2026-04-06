@@ -91,6 +91,11 @@
 
                 sb.auth.onAuthStateChange((event, session) => {
                     if (!session || !onRoot()) return;
+                    if (event === "PASSWORD_RECOVERY") {
+                        stripAuthFromUrl();
+                        window.location.replace("/reset-password.html");
+                        return;
+                    }
                     if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
                         goApp();
                     }
