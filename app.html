@@ -65,7 +65,7 @@
     }
 
     supabase.auth.onAuthStateChange((_e, s) => {
-      if (!s?.session) window.location.replace("/login.html");
+      if (!s) window.location.replace("/login.html");
     });
 
     document.getElementById("logout").addEventListener("click", async () => {
